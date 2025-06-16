@@ -1,6 +1,123 @@
-[build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+[project]
+name = "TPOT"
+description = "Tree-based Pipeline Optimization Tool"
+license = "LGPL-3.0"
+version="0.0.0"  # grabbed from _version.py by poetry-dynamic-versioning (see "dynamic" instances below)
+dynamic = ["version"]
+# TODO: this doesn't seem to match code comments
+authors = [{ name = "Pedro Ribioro", email = "pedroribeiroh@gmail.com" }]
+readme = "README.md"
+#These cause tests to fail
+project.urls = [
+    "https://epistasislab.github.io/tpot/",
+    "https://github.com/EpistasisLab/tpot",
+]
+classifiers=[
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+keywords = [
+    "pipeline optimization",
+    "hyperparameter optimization",
+    "data science",
+    "machine learning",
+    "genetic programming",
+    "evolutionary computation"
+]
+requires-python=">=3.10.0,<3.14.0"
+
+# TODO: Specifically-listed deps from setup.py that aren't included here yet.
+# 'optuna>=3.0.5',
+# 'dask-expr>=1.0.12',
+# 'dask-jobqueue>=0.8.5',
+# 'func_timeout>=4.3.5',
+# 'dill>=0.3.9'
+
+# TODO: Not yet integrated from setup.py
+#extras_require={
+#    'skrebate': ['skrebate>=0.3.4'],
+#    'mdr': ['scikit-mdr>=0.4.4'],
+#    'sklearnex' : ['scikit-learn-intelex>=2023.2.1'],
+#    'amltk' : ['amltk>=1.12.1'],
+#}
+
+# TODO: several dependencies don't seem strictly needed in every context, but were needed
+# to run the code as-is.
+
+dependencies = [
+    "ConfigSpace>=1.1.1",
+    "distributed>=2024.4.2",
+    "func_timeout>=4.3.5",
+    "joblib>=1.1.1",
+    "lightgbm>=3.3.3",
+    "matplotlib>=3.6.2",
+    "networkx>=3.0",
+    "nose",
+    "numpy>=1.26.4",
+    "pandas>=2.2.0",
+    "scikit-learn>=1.6",
+    "scipy>=1.3.1",
+    "stopit>=1.1.1",
+    "tqdm>=4.36.1",
+    "traitlets>=5.8.0",
+    # TODO: setuptools was needed to make stopit work.
+    # stopit is a dead project.
+    #>>> import tpot
+    #Traceback (most recent call last):
+    #  File "<stdin>", line 1, in <module>
+    #  File "/code/tpot/__init__.py", line 48, in <module>
+    #    from . import utils
+    #  File "/code/tpot/utils/__init__.py", line 36, in <module>
+    #    from . import eval_utils
+    #  File "/code/tpot/utils/eval_utils.py", line 43, in <module>
+    #    from stopit import threading_timeoutable, TimeoutException
+    #  File "/root/.cache/pypoetry/virtualenvs/tpot-MATOk_fk-py3.12/lib/python3.12/site-packages/stopit/__init__.py", line 10, in <module>
+    #    import pkg_resources
+    #ModuleNotFoundError: No module named 'pkg_resources'
+    "setuptools (>=80.9.0,<81.0.0)",
+]
+
+[project.optional-dependencies]
+cpu = ["xgboost-cpu>=3.0"]
+cuda = ["xgboost>=3.0"]
+nn = ["torch"]
+plot = ["matplotlib"]
+
+[tool.poetry]
+
+[tool.poetry.group.dev]
+optional = true
+[tool.poetry.group.dev.dependencies]
+nose = "*"
+pytest = "*"
+pytest-cov = "*"
+mypy = "*"
+flake8 = "*"
+tox = "*"
+
+# Define in a separate group, so clients can optionally opt out.
+[tool.poetry.group.updates.dependencies]
+update_checker = ">=0.16"
+
+
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = ">=1.0.0,<2.0.0"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+# version = { git-tag = true }
+# version = { attr = "tpot.__version__" }
+
+[tool.poetry.group.github-ci]
+optional = true
+
+[tool.poetry.group.github-ci.dependencies]
+tox-gh-actions = "*"
 
 [tool.pytest.ini_options]
 addopts = "--cov=tpot"
@@ -21,3 +138,7 @@ warn_return_any = true
 warn_unreachable = true
 warn_unused_configs = true
 no_implicit_reexport = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"
